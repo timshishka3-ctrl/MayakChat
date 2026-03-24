@@ -21,11 +21,12 @@ jobs:
           pip install --upgrade pip
           pip install "cython<3.0.0" buildozer setuptools
 
-      - name: Install Android Build Tools
+      - name: Fix Aidl Path
         run: |
-          # Принудительно ставим build-tools, где лежит aidl
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "build-tools;33.0.0" "platforms;android-33"
-          echo "PATH=$ANDROID_HOME/build-tools/33.0.0:$PATH" >> $GITHUB_ENV
+          # Устанавливаем нужные инструменты
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "build-tools;33.0.0"
+          # Создаем прямую ссылку, чтобы Buildozer нашел aidl
+          sudo ln -s $ANDROID_HOME/build-tools/33.0.0/aidl /usr/local/bin/aidl
 
       - name: Build with Buildozer
         run: |
